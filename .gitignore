@@ -5,6 +5,7 @@ desktop.ini
 *.swp
 .idea/
 .vscode/
+.claude/
 
 # Render / source temp (não publicar ficheiros pesados)
 *.mov
