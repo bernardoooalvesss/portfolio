@@ -1,50 +1,52 @@
-# Portfolio — Bernardo · 3D Technical Director
+# Portfolio — Bernardo Alves · 3D & VFX Artist
 
-Site estático (HTML/CSS/JS, sem dependências) para portfolio de 3D/VFX.
-Pensado para **GitHub Pages**: zero custo, zero build.
+Static site (HTML/CSS/JS, no dependencies) for a 3D/VFX portfolio.
+Built for **GitHub Pages**: zero cost, zero build.
 
-## Estrutura
+## Structure
 
 ```
 .
-├── index.html        # o site inteiro (HTML + CSS + JS embebidos)
-├── .nojekyll         # desliga o Jekyll (serve os ficheiros tal e qual)
-├── .gitignore        # ignora junk de OS e ficheiros-fonte pesados
-└── assets/           # a tua media (posters .jpg + loops .mp4/.webm)
-    └── README.txt    # guia de compressão + nomes de ficheiro
+├── index.html        # the whole site (HTML + CSS + JS inline)
+├── 404.html          # custom not-found page
+├── .nojekyll         # disables Jekyll (serves files as-is)
+├── .gitignore        # ignores OS junk + heavy source files
+└── assets/
+    ├── README.txt    # compression guide + file naming
+    └── media/        # the media (videos .mp4 + stills .jpg)
 ```
 
-## Pôr online (repo: berna/portfolio)
-
-O repo já existe. Copia estes ficheiros para a tua pasta `portfolio` e:
+## Publish
 
 ```bash
 cd portfolio
 git add -A
-git commit -m "Add portfolio site"
+git commit -m "Update portfolio site"
 git push
 ```
 
-Depois: **Settings → Pages → Source: Deploy from branch → `main` / `/ (root)`**.
-Online em `https://berna.github.io/portfolio/` (1-2 min).
+Then: **Settings → Pages → Source: Deploy from branch → `main` / `/ (root)`**.
+Live at `https://bernatdoalvesss-cpuuboryx.github.io/portfolio/` (1–2 min).
 
-## Adicionar projetos
+## Adding projects
 
-Cada projeto é um `<article class="tile">` no `index.html`. Duplica o bloco e
-edita os atributos `data-*`:
+Each project is an `<article class="tile">` in `index.html`. Duplicate the block
+and edit the `data-*` attributes:
 
-| Atributo        | O que é                                  |
+| Attribute       | What it is                               |
 |-----------------|------------------------------------------|
-| `data-title`    | Nome do projeto                          |
-| `data-year`     | Ano                                      |
+| `data-title`    | Project name                             |
+| `data-year`     | Year                                     |
 | `data-soft`     | Software / pipeline                      |
-| `data-role`     | O teu papel (Sim / Lighting / Look-dev)  |
-| `data-tag`      | Etiqueta de categoria                    |
-| `data-poster`   | `assets/nome.jpg` (still)                |
-| `data-src-mp4`  | `assets/nome.mp4` (loop H.264)           |
-| `data-src-webm` | `assets/nome.webm` (loop AV1/VP9, opc.)  |
+| `data-role`     | Your role (Sim / Lighting / Look-dev)    |
+| `data-tag`      | Category label                           |
+| `data-poster`   | `assets/media/name.jpg` (still)          |
+| `data-src-mp4`  | `assets/media/name.mp4` (H.264 loop)     |
+| `data-src-webm` | `assets/media/name.webm` (AV1/VP9, opt.) |
 
-## Limites GitHub Pages
+Image-only tiles use `data-img` instead of the video sources.
 
-100 MB por ficheiro · 1 GB site total · 100 GB/mês de banda.
-Comprime os loops para 3–8 MB (ver `assets/README.txt`).
+## GitHub Pages limits
+
+100 MB per file · 1 GB total · 100 GB/month bandwidth.
+Compress loops to 3–8 MB (see `assets/README.txt`).
