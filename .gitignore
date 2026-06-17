@@ -1,0 +1,15 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Render / source temp (não publicar ficheiros pesados)
+*.mov
+*.exr
+*.aep
+*.c4d
+*.psd
+backup/

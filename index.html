@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bernardo — 3D Technical Director / VFX</title>
+<meta name="description" content="Portfolio de Bernardo — Technical Director e artista 3D. Cinema 4D, Redshift, simulações Pyro, animação de produto e visualização.">
+
+<!-- ============================================================
+     COMO USAR ESTE FICHEIRO
+     ------------------------------------------------------------
+     1. Cria um repositório no GitHub (ex.: bernardo.github.io).
+     2. Põe este index.html na raiz + uma pasta /assets com a media.
+     3. Settings > Pages > Source: Deploy from branch > main / root.
+     4. Em minutos o site fica em https://<user>.github.io
+
+     ONDE METER A TUA MEDIA:
+     - Procura por  data-poster  e  data-src-mp4 / data-src-webm
+       em cada <article class="tile">. Troca os caminhos placeholder
+       por /assets/projeto.jpg e /assets/projeto.mp4 (ver bloco ffmpeg
+       que o Bernardo já tem). O vídeo só carrega quando entra no ecrã.
+     - O reel do hero está em  #hero-video  (data-src-mp4 / webm).
+     - Sem ficheiros reais, os tiles mostram posters SVG gerados — o
+       layout funciona à mesma para veres a estrutura.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0d0d10;
+  --bg-raise:#15151a;
+  --line:#26262e;
+  --line-soft:#1c1c22;
+  --ink:#f2f0ec;
+  --ink-dim:#9a99a3;
+  --ink-faint:#5e5d68;
+  --ember:#e8852b;        /* acento — derivado do Pyro, usado com parcimónia */
+  --ember-soft:#c66a1d;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --maxw:1280px;
+  --gutter:clamp(20px,5vw,64px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img,video{display:block;max-width:100%}
+
+/* ---- utility: render-slate metadata (a assinatura) ---- */
+.slate{
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  letter-spacing:.04em;
+  color:var(--ink-faint);
+  text-transform:uppercase;
+}
+.slate b{color:var(--ink-dim);font-weight:500}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--ember);
+}
+
+/* ---------------- NAV ---------------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--gutter);
+  backdrop-filter:blur(10px);
+  background:color-mix(in srgb,var(--bg) 72%, transparent);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s, background .3s;
+}
+.nav.scrolled{border-bottom-color:var(--line-soft)}
+.brand{font-family:var(--font-display);font-weight:600;font-size:1rem;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--ember);box-shadow:0 0 12px var(--ember)}
+.nav-links{display:flex;gap:30px;font-family:var(--font-mono);font-size:.78rem;letter-spacing:.03em}
+.nav-links a{color:var(--ink-dim);transition:color .2s;position:relative;padding:4px 0}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--ink)}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:0;background:var(--ember);transition:width .25s}
+.nav-links a:hover::after,.nav-links a:focus-visible::after{width:100%}
+@media(max-width:680px){.nav-links{display:none}}
+
+/* ---------------- HERO ---------------- */
+.hero{position:relative;height:100svh;min-height:560px;display:flex;align-items:flex-end;overflow:hidden}
+.hero-media{position:absolute;inset:0;z-index:0}
+.hero-media video,.hero-media .poster-fallback{width:100%;height:100%;object-fit:cover}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,13,16,.55) 0%,rgba(13,13,16,.2) 35%,rgba(13,13,16,.9) 100%)}
+.hero-inner{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter) clamp(40px,7vh,90px)}
+.hero h1{
+  font-family:var(--font-display);font-weight:600;
+  font-size:clamp(2.6rem,8vw,6.2rem);
+  line-height:.98;letter-spacing:-.03em;max-width:14ch;
+}
+.hero h1 em{font-style:normal;color:var(--ember)}
+.hero-sub{margin-top:22px;max-width:46ch;color:var(--ink-dim);font-size:clamp(1rem,1.4vw,1.18rem)}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:30px}
+.scrollcue{position:absolute;right:var(--gutter);bottom:34px;z-index:2}
+.scrollcue span{display:block;width:1px;height:46px;margin:0 auto 8px;background:linear-gradient(var(--ember),transparent);animation:drop 1.8s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------------- SECTIONS ---------------- */
+section{max-width:var(--maxw);margin:0 auto;padding:clamp(70px,11vh,140px) var(--gutter)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:46px;border-bottom:1px solid var(--line-soft);padding-bottom:18px}
+.sec-head h2{font-family:var(--font-display);font-weight:500;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.02em}
+.sec-head .count{font-family:var(--font-mono);color:var(--ink-faint);font-size:.8rem}
+
+/* ---------------- WORK GRID ---------------- */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(16px,2.2vw,30px)}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.tile{
+  position:relative;border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;
+  background:var(--bg-raise);cursor:pointer;
+  transition:border-color .3s, transform .3s;
+}
+.tile:hover,.tile:focus-visible{border-color:var(--line);transform:translateY(-3px);outline:none}
+.tile-frame{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+.tile-frame video,.tile-frame .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile-frame video{opacity:0;transition:opacity .4s}
+.tile.playing .tile-frame video{opacity:1}
+.tile-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(13,13,16,.85));pointer-events:none}
+.tile-tag{position:absolute;top:12px;left:12px;z-index:3;font-family:var(--font-mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:rgba(13,13,16,.55);border:1px solid var(--line);padding:4px 9px;border-radius:3px;backdrop-filter:blur(4px)}
+.tile-body{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px}
+.tile-body h3{font-family:var(--font-display);font-weight:500;font-size:1.15rem;letter-spacing:-.01em}
+.tile-body .row{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:7px}
+.play-dot{position:absolute;top:12px;right:12px;z-index:3;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(13,13,16,.5);display:grid;place-items:center;backdrop-filter:blur(4px);transition:background .25s,border-color .25s}
+.tile:hover .play-dot{background:var(--ember);border-color:var(--ember)}
+.play-dot svg{width:12px;height:12px;fill:var(--ink)}
+.tile:hover .play-dot svg{fill:#0d0d10}
+
+/* ---------------- ABOUT ---------------- */
+.about{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(30px,5vw,70px);align-items:start}
+@media(max-width:820px){.about{grid-template-columns:1fr}}
+.about p{color:var(--ink-dim);font-size:1.06rem;max-width:54ch}
+.about p+p{margin-top:18px}
+.about strong{color:var(--ink);font-weight:500}
+.spec-list{border:1px solid var(--line-soft);border-radius:4px;overflow:hidden}
+.spec-row{display:flex;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line-soft);font-family:var(--font-mono);font-size:.8rem}
+.spec-row:last-child{border-bottom:none}
+.spec-row .k{color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;font-size:.7rem}
+.spec-row .v{color:var(--ink);text-align:right}
+
+/* ---------------- CONTACT ---------------- */
+.contact{text-align:left;border-top:1px solid var(--line-soft)}
+.contact h2{font-family:var(--font-display);font-weight:600;font-size:clamp(2rem,6vw,4rem);letter-spacing:-.03em;line-height:1.02;max-width:16ch}
+.contact h2 a{color:var(--ember);transition:opacity .2s}
+.contact h2 a:hover{opacity:.7}
+.contact-links{display:flex;flex-wrap:wrap;gap:14px 30px;margin-top:38px;font-family:var(--font-mono);font-size:.85rem}
+.contact-links a{color:var(--ink-dim);border-bottom:1px solid transparent;padding-bottom:2px;transition:color .2s,border-color .2s}
+.contact-links a:hover,.contact-links a:focus-visible{color:var(--ink);border-color:var(--ember)}
+footer{max-width:var(--maxw);margin:0 auto;padding:30px var(--gutter) 50px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid var(--line-soft)}
+
+/* ---------------- LIGHTBOX ---------------- */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(7,7,9,.94);display:none;align-items:center;justify-content:center;padding:var(--gutter)}
+.lb.open{display:flex}
+.lb-inner{width:100%;max-width:1060px}
+.lb-frame{position:relative;aspect-ratio:16/9;background:#000;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.lb-frame video{width:100%;height:100%;object-fit:contain;background:#000}
+.lb-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:18px}
+.lb-meta h3{font-family:var(--font-display);font-weight:500;font-size:1.4rem}
+.lb-meta .row{display:flex;gap:8px 22px;flex-wrap:wrap;align-items:center}
+.lb-close{position:absolute;top:calc(var(--gutter) - 6px);right:var(--gutter);z-index:101;background:none;border:1px solid var(--line);color:var(--ink);width:42px;height:42px;border-radius:50%;font-size:1.1rem;cursor:pointer;transition:border-color .2s,background .2s}
+.lb-close:hover{border-color:var(--ember);background:var(--bg-raise)}
+
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="#top"><span class="dot"></span>BERNARDO</a>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <div class="hero-media">
+    <!-- Troca data-src-* pelo teu showreel comprimido. Sem ficheiro mostra o poster. -->
+    <video id="hero-video" muted loop playsinline preload="none"
+           poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='38%25' r='75%25'%3E%3Cstop offset='0' stop-color='%232a1a0e'/%3E%3Cstop offset='.5' stop-color='%23141016'/%3E%3Cstop offset='1' stop-color='%230d0d10'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url(%23g)'/%3E%3C/svg%3E"
+           data-src-webm="assets/reel.webm"
+           data-src-mp4="assets/reel.mp4"></video>
+  </div>
+  <div class="hero-inner">
+    <p class="eyebrow">3D Technical Director · VFX · Cinema&nbsp;4D / Redshift</p>
+    <h1>Simulação,<br>luz e <em>movimento.</em></h1>
+    <p class="hero-sub">Pyro, partículas e fluidos. Animação de produto e visualização. Pipelines C4D/Redshift do conceito ao render final.</p>
+    <div class="hero-meta">
+      <span class="slate"><b>Base</b> · Portugal</span>
+      <span class="slate"><b>Stack</b> · C4D 2026 · Redshift</span>
+      <span class="slate"><b>Foco</b> · Sim / Look-dev / Lighting</span>
+    </div>
+  </div>
+  <div class="scrollcue"><span></span><em class="slate">scroll</em></div>
+</header>
+
+<!-- ===================== WORK ===================== -->
+<section id="work">
+  <div class="sec-head">
+    <h2>Selected Work</h2>
+    <span class="count" id="work-count"></span>
+  </div>
+
+  <div class="grid" id="grid">
+    <!-- ===== TILE TEMPLATE — duplica e edita para cada projeto =====
+         data-poster   : imagem still (jpg/webp) — first frame de alta qualidade
+         data-src-mp4  : loop H.264 comprimido (fallback universal)
+         data-src-webm : loop AV1/VP9 (mais leve, opcional)
+         data-title / data-year / data-soft / data-role : metadata do slate
+    -->
+    <article class="tile" tabindex="0"
+      data-title="Smoke Flare — Football Supporter"
+      data-year="2026" data-soft="C4D Pyro · Redshift" data-role="Sim / Lighting"
+      data-tag="Pyro / FX"
+      data-poster="assets/flare.jpg" data-src-mp4="assets/flare.mp4" data-src-webm="assets/flare.webm"></article>
+
+    <article class="tile" tabindex="0"
+      data-title="Revolut Metal — Sand Reveal"
+      data-year="2026" data-soft="C4D · Redshift" data-role="FX / Look-dev"
+      data-tag="Product"
+      data-poster="assets/revolut.jpg" data-src-mp4="assets/revolut.mp4" data-src-webm="assets/revolut.webm"></article>
+
+    <article class="tile" tabindex="0"
+      data-title="Statue Disintegration"
+      data-year="2026" data-soft="C4D Particles · Redshift" data-role="Sim / FX"
+      data-tag="Particles"
+      data-poster="assets/statue.jpg" data-src-mp4="assets/statue.mp4" data-src-webm="assets/statue.webm"></article>
+
+    <article class="tile" tabindex="0"
+      data-title="Iridescent Ornament — Glitter"
+      data-year="2025" data-soft="Redshift Look-dev" data-role="Material / Lighting"
+      data-tag="Look-dev"
+      data-poster="assets/ornament.jpg" data-src-mp4="assets/ornament.mp4" data-src-webm="assets/ornament.webm"></article>
+
+    <article class="tile" tabindex="0"
+      data-title="Kinetic Sand Study"
+      data-year="2025" data-soft="C4D · Redshift" data-role="Sim / Look-dev"
+      data-tag="Material"
+      data-poster="assets/sand.jpg" data-src-mp4="assets/sand.mp4" data-src-webm="assets/sand.webm"></article>
+
+    <article class="tile" tabindex="0"
+      data-title="LED Canopy Tree — Event Viz"
+      data-year="2025" data-soft="C4D · Redshift" data-role="Archviz / Lighting"
+      data-tag="Archviz"
+      data-poster="assets/tree.jpg" data-src-mp4="assets/tree.mp4" data-src-webm="assets/tree.webm"></article>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about">
+  <div class="sec-head">
+    <h2>Profile</h2>
+    <span class="count">// TD</span>
+  </div>
+  <div class="about">
+    <div>
+      <p>Sou um <strong>Technical Director e artista 3D</strong> focado em pipelines Maxon Cinema&nbsp;4D e Redshift. Trabalho transversalmente em simulação (Pyro, partículas, fluidos), animação de produto comercial e visualização para arquitetura e eventos.</p>
+      <p>O meu foco é a <strong>perfeição estética com eficiência técnica</strong>: resolver o look-dev, a iluminação e a otimização de render sem comprometer a fidelidade física. Também desenvolvo ferramentas próprias para acelerar o pipeline de simulação.</p>
+    </div>
+    <div class="spec-list">
+      <div class="spec-row"><span class="k">DCC</span><span class="v">Cinema 4D 2026</span></div>
+      <div class="spec-row"><span class="k">Render</span><span class="v">Redshift</span></div>
+      <div class="spec-row"><span class="k">Sim</span><span class="v">Pyro · Particles · Fluids</span></div>
+      <div class="spec-row"><span class="k">Dev</span><span class="v">Python · C4D Plugins</span></div>
+      <div class="spec-row"><span class="k">Sectors</span><span class="v">VFX · Product · Archviz</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="contact">
+  <p class="eyebrow" style="margin-bottom:22px">Open to projects & collaboration</p>
+  <h2>Tens um projeto?<br><a href="mailto:teu@email.com">Fala comigo →</a></h2>
+  <div class="contact-links">
+    <a href="mailto:teu@email.com">teu@email.com</a>
+    <a href="https://artstation.com/" target="_blank" rel="noopener">ArtStation</a>
+    <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</section>
+
+<footer>
+  <span class="slate">© <span id="yr"></span> Bernardo · 3D Technical Director</span>
+  <span class="slate">Built static · GitHub Pages</span>
+</footer>
+
+<!-- ===================== LIGHTBOX ===================== -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Project viewer">
+  <button class="lb-close" id="lb-close" aria-label="Fechar">✕</button>
+  <div class="lb-inner">
+    <div class="lb-frame">
+      <video id="lb-video" controls playsinline></video>
+    </div>
+    <div class="lb-meta">
+      <h3 id="lb-title"></h3>
+      <div class="row">
+        <span class="slate" id="lb-year"></span>
+        <span class="slate" id="lb-soft"></span>
+        <span class="slate" id="lb-role"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Poster SVG gerado (placeholder enquanto não há ficheiros reais)
+  function genPoster(seed){
+    var hues=[[42,28,14],[20,16,22],[14,20,28],[30,18,12],[18,22,18],[24,16,20]];
+    var c=hues[seed%hues.length];
+    var svg="<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'>"
+      +"<defs><radialGradient id='g' cx='42%' cy='40%' r='80%'>"
+      +"<stop offset='0' stop-color='rgb("+(c[0]+22)+","+(c[1]+12)+","+(c[2]+6)+")'/>"
+      +"<stop offset='.55' stop-color='rgb("+c[0]+","+c[1]+","+c[2]+")'/>"
+      +"<stop offset='1' stop-color='#0d0d10'/></radialGradient></defs>"
+      +"<rect width='800' height='500' fill='url(#g)'/></svg>";
+    return "data:image/svg+xml,"+encodeURIComponent(svg);
+  }
+
+  // ---- Build tiles ----
+  var grid=document.getElementById('grid');
+  var tiles=Array.prototype.slice.call(grid.querySelectorAll('.tile'));
+  document.getElementById('work-count').textContent='// '+String(tiles.length).padStart(2,'0')+' projects';
+
+  tiles.forEach(function(t,i){
+    var poster=t.dataset.poster, posterFallback=genPoster(i);
+    t.innerHTML=
+      '<div class="tile-frame">'+
+        '<img class="poster" alt="'+t.dataset.title+'" loading="lazy" src="'+poster+'" onerror="this.onerror=null;this.src=\''+posterFallback+'\'">'+
+        '<video muted loop playsinline preload="none" poster="'+posterFallback+'"></video>'+
+      '</div>'+
+      '<span class="tile-tag">'+t.dataset.tag+'</span>'+
+      '<span class="play-dot" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></span>'+
+      '<div class="tile-body">'+
+        '<h3>'+t.dataset.title+'</h3>'+
+        '<div class="row">'+
+          '<span class="slate"><b>'+t.dataset.year+'</b></span>'+
+          '<span class="slate">'+t.dataset.soft+'</span>'+
+          '<span class="slate">'+t.dataset.role+'</span>'+
+        '</div>'+
+      '</div>';
+  });
+
+  // ---- Lazy-load tile loops + hover play ----
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var t=e.target, v=t.querySelector('video');
+      if(!v.dataset.loaded){
+        if(t.dataset.srcWebm) addSrc(v,t.dataset.srcWebm,'video/webm');
+        if(t.dataset.srcMp4)  addSrc(v,t.dataset.srcMp4,'video/mp4');
+        v.dataset.loaded='1'; v.load();
+      }
+      io.unobserve(t);
+    });
+  },{rootMargin:'200px'});
+
+  function addSrc(video,src,type){var s=document.createElement('source');s.src=src;s.type=type;video.appendChild(s);}
+
+  tiles.forEach(function(t){
+    io.observe(t);
+    var v=t.querySelector('video');
+    var play=function(){ if(v.querySelector('source')){t.classList.add('playing');var p=v.play();if(p)p.catch(function(){});} };
+    var stop=function(){t.classList.remove('playing');v.pause();};
+    t.addEventListener('mouseenter',play);
+    t.addEventListener('mouseleave',stop);
+    t.addEventListener('focus',play);
+    t.addEventListener('blur',stop);
+    t.addEventListener('click',function(){openLB(t);});
+    t.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openLB(t);}});
+  });
+
+  // ---- Hero video lazy ----
+  var hv=document.getElementById('hero-video');
+  var hio=new IntersectionObserver(function(en){
+    en.forEach(function(e){
+      if(e.isIntersecting && !hv.dataset.loaded){
+        if(hv.dataset.srcWebm) addSrc(hv,hv.dataset.srcWebm,'video/webm');
+        if(hv.dataset.srcMp4)  addSrc(hv,hv.dataset.srcMp4,'video/mp4');
+        hv.dataset.loaded='1';
+        if(hv.querySelector('source')){hv.load();var p=hv.play();if(p)p.catch(function(){});}
+      }
+    });
+  });
+  hio.observe(hv);
+
+  // ---- Lightbox ----
+  var lb=document.getElementById('lb'), lbv=document.getElementById('lb-video');
+  function openLB(t){
+    document.getElementById('lb-title').textContent=t.dataset.title;
+    document.getElementById('lb-year').innerHTML='<b>'+t.dataset.year+'</b>';
+    document.getElementById('lb-soft').textContent=t.dataset.soft;
+    document.getElementById('lb-role').textContent=t.dataset.role;
+    lbv.innerHTML='';
+    if(t.dataset.srcWebm) addSrc(lbv,t.dataset.srcWebm,'video/webm');
+    if(t.dataset.srcMp4)  addSrc(lbv,t.dataset.srcMp4,'video/mp4');
+    lbv.poster=t.querySelector('video').poster;
+    lbv.load();
+    lb.classList.add('open');document.body.style.overflow='hidden';
+    document.getElementById('lb-close').focus();
+  }
+  function closeLB(){lb.classList.remove('open');lbv.pause();document.body.style.overflow='';}
+  document.getElementById('lb-close').addEventListener('click',closeLB);
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLB();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&lb.classList.contains('open'))closeLB();});
+
+  // ---- Nav scroll state ----
+  var nav=document.getElementById('nav');
+  window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>40);},{passive:true});
+
+  document.getElementById('yr').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
