@@ -14,12 +14,19 @@ Pensado para **GitHub Pages**: zero custo, zero build.
     └── README.txt    # guia de compressão + nomes de ficheiro
 ```
 
-## Pôr online
+## Pôr online (repo: berna/portfolio)
 
-1. Cria um repo **público** chamado `<o-teu-user>.github.io`.
-2. `git push` deste conteúdo para `main`.
-3. **Settings → Pages → Source: Deploy from branch → `main` / `/ (root)`**.
-4. Online em `https://<o-teu-user>.github.io` (1-2 min).
+O repo já existe. Copia estes ficheiros para a tua pasta `portfolio` e:
+
+```bash
+cd portfolio
+git add -A
+git commit -m "Add portfolio site"
+git push
+```
+
+Depois: **Settings → Pages → Source: Deploy from branch → `main` / `/ (root)`**.
+Online em `https://berna.github.io/portfolio/` (1-2 min).
 
 ## Adicionar projetos
 
