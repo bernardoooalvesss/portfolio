@@ -243,7 +243,7 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
   </div>
   <div class="hero-inner">
     <p class="eyebrow">3D &amp; VFX Artist · Cinema&nbsp;4D / Redshift</p>
-    <h1>Bernardo Alves</h1>
+    <h1>Portfolio</h1>
     <p class="hero-sub">Simulation, product animation and visualization — Pyro, particles and fluids, look-dev and lighting. Cinema&nbsp;4D / Redshift, from concept to final render.</p>
     <div class="hero-meta">
       <span class="slate"><b>Based</b> · Portugal</span>
@@ -323,7 +323,7 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
 <!-- ===================== ABOUT ===================== -->
 <section id="about">
   <div class="sec-head">
-    <h2>Profile</h2>
+    <h2>About</h2>
     <span class="count">// 3D · VFX</span>
   </div>
   <div class="about">
@@ -344,11 +344,10 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
 <!-- ===================== CONTACT ===================== -->
 <section id="contact" class="contact">
   <p class="eyebrow" style="margin-bottom:22px">Open to roles, freelance &amp; collaboration</p>
-  <h2>Looking for a 3D&nbsp;&amp;&nbsp;VFX artist?<br><a href="mailto:teu@email.com">Get in touch →</a></h2>
+  <h2>Looking for a 3D&nbsp;&amp;&nbsp;VFX artist?<br><a href="mailto:bernardoalves3d@gmail.com">Get in touch →</a></h2>
   <div class="contact-links">
-    <a href="mailto:teu@email.com">teu@email.com</a>
-    <a href="https://artstation.com/" target="_blank" rel="noopener">ArtStation</a>
-    <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+    <a href="mailto:bernardoalves3d@gmail.com">Email</a>
+    <a href="https://www.behance.net/bernardoalves36" target="_blank" rel="noopener">Behance</a>
     <a href="https://www.linkedin.com/in/bernardo-alves-708a09206/" target="_blank" rel="noopener">LinkedIn</a>
   </div>
 </section>
@@ -369,7 +368,6 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
     <div class="lb-meta">
       <h3 id="lb-title"></h3>
       <div class="row">
-        <span class="slate" id="lb-year"></span>
         <span class="slate" id="lb-soft"></span>
         <span class="slate" id="lb-role"></span>
       </div>
@@ -415,7 +413,6 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
       '<div class="tile-body">'+
         '<h3>'+t.dataset.title+'</h3>'+
         '<div class="row">'+
-          '<span class="slate"><b>'+t.dataset.year+'</b></span>'+
           '<span class="slate">'+t.dataset.soft+'</span>'+
           '<span class="slate">'+t.dataset.role+'</span>'+
         '</div>'+
@@ -484,7 +481,6 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
   var lb=document.getElementById('lb'), lbv=document.getElementById('lb-video'), lbi=document.getElementById('lb-img');
   function openLB(t){
     document.getElementById('lb-title').textContent=t.dataset.title;
-    document.getElementById('lb-year').innerHTML='<b>'+t.dataset.year+'</b>';
     document.getElementById('lb-soft').textContent=t.dataset.soft;
     document.getElementById('lb-role').textContent=t.dataset.role;
     var hasVideo=!!(t.dataset.srcMp4||t.dataset.srcWebm);
