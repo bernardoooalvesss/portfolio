@@ -91,41 +91,67 @@
     t.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openLB(t);}});
   });
 
-  /* ---- Hover preview: scale the tile up over its neighbours, fitted to the
-     viewport (just the looping video + info, no controls). Pointer devices
-     only; never grows past the screen edges. ---- */
+  /* ---- Hover preview overlay: the video at its native aspect ratio (no black
+     bars, no crop) with the project info to its right. Pointer devices only;
+     always fitted to the viewport and never upscaled beyond native size. ---- */
   var canHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-  function previewIn(t){
-    if(!canHover) return;
-    var r=t.getBoundingClientRect();
-    var vw=window.innerWidth, vh=window.innerHeight;
-    var padX=24, padTop=72, padBottom=24;          // keep clear of the fixed nav
-    var maxW=vw-padX*2, maxH=vh-padTop-padBottom;
-    var S=Math.min(maxW/r.width, maxH/r.height, 2.3);
-    if(S<1.04) S=1.04;
-    var w2=r.width*S, h2=r.height*S;
-    var cx=r.left+r.width/2, cy=r.top+r.height/2;  // grow from the tile's centre
-    var x=Math.max(padX, Math.min(vw-w2-padX, cx-w2/2));
-    var y=Math.max(padTop, Math.min(vh-h2-padBottom, cy-h2/2));
-    t.style.transformOrigin='0 0';
-    t.style.zIndex='30';
-    t.style.transform='translate('+(x-r.left).toFixed(1)+'px,'+(y-r.top).toFixed(1)+'px) scale('+S.toFixed(3)+')';
-    t.classList.add('previewing');
+  var pv=document.getElementById('preview');
+  if(pv && canHover){
+    var pVideo=pv.querySelector('video'),
+        pImg=pv.querySelector('img'),
+        pMedia=pv.querySelector('.preview-media'),
+        pTag=pv.querySelector('.p-tag'),
+        pTitle=pv.querySelector('.p-title'),
+        pSoft=pv.querySelector('.p-soft'),
+        pRole=pv.querySelector('.p-role'),
+        current=null, hideT=0;
+
+    function nativeOf(t){
+      var v=t.querySelector('video');
+      if(v && v.videoWidth) return {w:v.videoWidth, h:v.videoHeight};
+      var im=t.querySelector('img.poster');
+      if(im && im.naturalWidth) return {w:im.naturalWidth, h:im.naturalHeight};
+      return {w:1920, h:1200};
+    }
+    function sizeMedia(n){
+      var vw=window.innerWidth, vh=window.innerHeight, pad=64, infoW=300;
+      var aspect=n.w/n.h;
+      var mh=Math.min(vh-pad*2, (vw-pad*2-infoW)/aspect, n.h); // fit viewport, never upscale
+      pMedia.style.width=Math.round(mh*aspect)+'px';
+      pMedia.style.height=Math.round(mh)+'px';
+    }
+    function openPreview(t){
+      clearTimeout(hideT); current=t;
+      pTag.textContent=t.dataset.tag||'';
+      pTitle.textContent=t.dataset.title||'';
+      pSoft.textContent=t.dataset.soft||'';
+      pRole.textContent=t.dataset.role||'';
+      var hasVideo=!!(t.dataset.srcMp4||t.dataset.srcWebm);
+      if(hasVideo){
+        pImg.style.display='none'; pVideo.style.display='';
+        var src=t.dataset.srcMp4||t.dataset.srcWebm;
+        if(pVideo.getAttribute('src')!==src){ pVideo.setAttribute('src',src); }
+        var sv=t.querySelector('video'); if(sv) pVideo.poster=sv.poster;
+        var p=pVideo.play(); if(p)p.catch(function(){});
+      } else {
+        pVideo.style.display='none'; pImg.style.display='';
+        pImg.src=t.dataset.img||t.dataset.poster||'';
+      }
+      sizeMedia(nativeOf(t));
+      pv.classList.add('open');
+    }
+    function closePreview(){
+      if(!pv.classList.contains('open')) return;
+      pv.classList.remove('open'); current=null;
+      hideT=setTimeout(function(){ try{pVideo.pause();}catch(e){} },320);
+    }
+    tiles.forEach(function(t){
+      t.addEventListener('mouseenter',function(){ openPreview(t); });
+      t.addEventListener('mouseleave',closePreview);
+    });
+    window.addEventListener('resize',function(){ if(current) sizeMedia(nativeOf(current)); },{passive:true});
+    window.addEventListener('scroll',closePreview,{passive:true});
   }
-  function previewOut(t){
-    t.classList.remove('previewing');
-    t.style.transform='';
-    clearTimeout(t._z);
-    t._z=setTimeout(function(){ t.style.zIndex=''; },560);  // stay on top until it settles
-  }
-  tiles.forEach(function(t){
-    t.addEventListener('mouseenter',function(){ previewIn(t); });
-    t.addEventListener('mouseleave',function(){ previewOut(t); });
-  });
-  // a preview is positioned from the viewport, so close it if the page scrolls
-  window.addEventListener('scroll',function(){
-    tiles.forEach(function(t){ if(t.classList.contains('previewing')) previewOut(t); });
-  },{passive:true});
 
   /* ---- Hero video lazy load ---- */
   var hv=document.getElementById('hero-video');
