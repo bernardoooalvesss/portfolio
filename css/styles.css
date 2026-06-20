@@ -95,9 +95,16 @@ html.js [data-reveal].in{opacity:1;transform:none}
 .hero h1 em{font-style:normal;color:var(--ember)}
 .hero-sub{margin-top:26px;max-width:48ch;color:var(--ink-dim);font-size:clamp(1.02rem,1.4vw,1.2rem);line-height:1.6}
 .hero-meta{display:flex;flex-wrap:wrap;gap:10px 32px;margin-top:36px}
-.scrollcue{position:absolute;right:var(--gutter);bottom:38px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:9px}
-.scrollcue span{display:block;width:1px;height:50px;background:linear-gradient(var(--ember),transparent);animation:drop 2s infinite}
-@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.scrollcue{position:absolute;right:var(--gutter);bottom:40px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;perspective:340px}
+.scrollcue .slate{opacity:.7;letter-spacing:.2em}
+.cube{position:relative;width:42px;height:42px;transform-style:preserve-3d;transform:rotateX(-20deg) rotateY(24deg)}
+.cube i{position:absolute;inset:0;display:block;border:1px solid color-mix(in srgb,var(--ember) 55%, transparent);background:color-mix(in srgb,var(--ember) 6%, transparent)}
+.cube i:nth-child(1){transform:translateZ(21px)}
+.cube i:nth-child(2){transform:rotateY(180deg) translateZ(21px)}
+.cube i:nth-child(3){transform:rotateY(90deg) translateZ(21px)}
+.cube i:nth-child(4){transform:rotateY(-90deg) translateZ(21px)}
+.cube i:nth-child(5){transform:rotateX(90deg) translateZ(21px)}
+.cube i:nth-child(6){transform:rotateX(-90deg) translateZ(21px)}
 
 /* ---------------- SECTIONS ---------------- */
 section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(--gutter)}
@@ -129,31 +136,28 @@ section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(-
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:var(--grid-gap);
-  transition:grid-template-columns .55s var(--ease), grid-template-rows .55s var(--ease);
 }
 @media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.grid{grid-template-columns:1fr}}
 
 .tile{
-  position:relative;border-radius:14px;overflow:hidden;min-width:0;min-height:0;
-  background:var(--bg-raise);cursor:pointer;
-  transition:transform .45s var(--ease), box-shadow .45s;
+  position:relative;border-radius:14px;overflow:hidden;min-width:0;
+  background:var(--bg-raise);cursor:pointer;will-change:transform;
+  transition:transform .55s cubic-bezier(.2,.8,.2,1), box-shadow .55s ease;
 }
 .tile::after{content:"";position:absolute;inset:0;border-radius:inherit;border:1px solid color-mix(in srgb,var(--ink) 7%, transparent);pointer-events:none;transition:border-color .4s;z-index:4}
-.tile:hover,.tile:focus-visible{transform:translateY(-6px);outline:none;box-shadow:0 26px 54px -26px rgba(0,0,0,.75)}
-.tile:hover::after,.tile:focus-visible::after{border-color:color-mix(in srgb,var(--ember) 42%, transparent)}
+/* hover preview: the tile scales up over its neighbours, fitted to the
+   viewport from JS — just the looping video + project info, no player UI */
+.tile.previewing{box-shadow:0 40px 90px -26px rgba(0,0,0,.85)}
+.tile.previewing::after{border-color:color-mix(in srgb,var(--ember) 50%, transparent)}
+.tile.previewing .play-dot{opacity:0}
+.tile:focus-visible{outline:none}
+.tile:focus-visible::after{border-color:color-mix(in srgb,var(--ember) 42%, transparent)}
 
 .tile-frame{position:relative;aspect-ratio:16/10;overflow:hidden;background:#05080c}
-/* expandable mode: tiles fill their (animated) grid cell */
-.grid.expandable .tile{height:100%}
-.grid.expandable .tile:hover,.grid.expandable .tile:focus-visible{transform:none;box-shadow:0 30px 64px -30px rgba(0,0,0,.8)}
-.grid.expandable .tile-frame{position:absolute;inset:0;aspect-ratio:auto}
-
 .tile-frame video,.tile-frame .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tile-frame video{opacity:0;transition:opacity .6s}
 .tile.playing .tile-frame video{opacity:1}
-.tile-frame .poster{transition:transform .6s var(--ease)}
-.tile:hover .tile-frame .poster{transform:scale(1.05)}
 .tile-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(8,11,16,.92));pointer-events:none}
 .tile-tag{position:absolute;top:15px;left:15px;z-index:3;font-family:var(--font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);background:color-mix(in srgb,var(--bg) 45%, transparent);padding:5px 11px;border-radius:100px;backdrop-filter:blur(6px)}
 .tile-body{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:clamp(18px,1.5vw,30px)}

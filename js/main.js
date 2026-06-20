@@ -63,7 +63,6 @@
       tiles.forEach(function(t){
         t.classList.toggle('hidden', cat!=='All' && t.dataset.tag!==cat);
       });
-      gridEqual();   // recompute rows/height after the visible set changes
     });
     filters.appendChild(b);
   });
@@ -77,9 +76,7 @@
         if(!v.dataset.loaded){
           if(t.dataset.srcWebm) addSrc(v,t.dataset.srcWebm,'video/webm');
           if(t.dataset.srcMp4)  addSrc(v,t.dataset.srcMp4,'video/mp4');
-          v.dataset.loaded='1';
-          v.addEventListener('loadedmetadata',function(){ if(v.videoHeight>v.videoWidth*1.05){ t.dataset.orient='portrait'; } },{once:true});
-          v.load();
+          v.dataset.loaded='1'; v.load();
         }
         if(v.querySelector('source')){t.classList.add('playing');var p=v.play();if(p)p.catch(function(){});}
       } else {
@@ -94,58 +91,41 @@
     t.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openLB(t);}});
   });
 
-  /* ---- Expanding grid (desktop hover, organic push) ---- */
-  var RATIO=0.625;   // 16:10 cells at rest
-  var gridActive=false;
-  function rand(a,b){ return a+Math.random()*(b-a); }
-  function gridDesktop(){ return window.matchMedia('(min-width:1101px) and (hover:hover) and (pointer:fine)').matches; }
-  function visTiles(){ return tiles.filter(function(t){return !t.classList.contains('hidden');}); }
-  function gridGap(){ return parseFloat(getComputedStyle(grid).columnGap)||0; }
-  function setGridHeight(r){
-    var gap=gridGap();
-    var colW=(grid.clientWidth-gap*2)/3;
-    var rowH=colW*RATIO;
-    grid.style.height=(r*rowH+(r-1)*gap)+'px';
+  /* ---- Hover preview: scale the tile up over its neighbours, fitted to the
+     viewport (just the looping video + info, no controls). Pointer devices
+     only; never grows past the screen edges. ---- */
+  var canHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  function previewIn(t){
+    if(!canHover) return;
+    var r=t.getBoundingClientRect();
+    var vw=window.innerWidth, vh=window.innerHeight;
+    var padX=24, padTop=72, padBottom=24;          // keep clear of the fixed nav
+    var maxW=vw-padX*2, maxH=vh-padTop-padBottom;
+    var S=Math.min(maxW/r.width, maxH/r.height, 2.3);
+    if(S<1.04) S=1.04;
+    var w2=r.width*S, h2=r.height*S;
+    var cx=r.left+r.width/2, cy=r.top+r.height/2;  // grow from the tile's centre
+    var x=Math.max(padX, Math.min(vw-w2-padX, cx-w2/2));
+    var y=Math.max(padTop, Math.min(vh-h2-padBottom, cy-h2/2));
+    t.style.transformOrigin='0 0';
+    t.style.zIndex='30';
+    t.style.transform='translate('+(x-r.left).toFixed(1)+'px,'+(y-r.top).toFixed(1)+'px) scale('+S.toFixed(3)+')';
+    t.classList.add('previewing');
   }
-  function gridEqual(){
-    if(!gridActive) return;
-    var r=Math.max(1,Math.ceil(visTiles().length/3));
-    grid.style.gridTemplateColumns='1fr 1fr 1fr';
-    grid.style.gridTemplateRows=new Array(r).fill('1fr').join(' ');
-    setGridHeight(r);
+  function previewOut(t){
+    t.classList.remove('previewing');
+    t.style.transform='';
+    clearTimeout(t._z);
+    t._z=setTimeout(function(){ t.style.zIndex=''; },560);  // stay on top until it settles
   }
-  function gridExpand(t){
-    if(!gridActive) return;
-    var vis=visTiles(), vi=vis.indexOf(t);
-    if(vi<0) return;
-    var r=Math.max(1,Math.ceil(vis.length/3));
-    var col=vi%3, row=Math.floor(vi/3), i, ct=[], rt=[];
-    var portrait=(t.dataset.orient==='portrait');
-    // Hovered cell: wide for landscape, tall for portrait media. Kept modest so
-    // an open tile never takes more room than ~2 default tiles. The other tracks
-    // are randomised so neighbours shrink to varied sizes (fr normalises to the
-    // fixed grid box, so the whole set keeps occupying the same space).
-    var Hc=portrait?1.05:1.50, Hr=portrait?2.00:1.15;
-    var oc=portrait?[0.85,1.15]:[0.72,0.95];   // other columns
-    var orow=portrait?[0.60,0.85]:[0.85,1.10]; // other rows
-    for(i=0;i<3;i++) ct.push((i===col?Hc:rand(oc[0],oc[1])).toFixed(3)+'fr');
-    for(i=0;i<r;i++) rt.push((i===row?Hr:rand(orow[0],orow[1])).toFixed(3)+'fr');
-    grid.style.gridTemplateColumns=ct.join(' ');
-    grid.style.gridTemplateRows=rt.join(' ');
-  }
-  function gridSync(){
-    var want=gridDesktop();
-    if(want&&!gridActive){ gridActive=true; grid.classList.add('expandable'); gridEqual(); }
-    else if(!want&&gridActive){ gridActive=false; grid.classList.remove('expandable'); grid.style.gridTemplateColumns=''; grid.style.gridTemplateRows=''; grid.style.height=''; }
-    else if(want&&gridActive){ gridEqual(); }
-  }
-  tiles.forEach(function(t){ t.addEventListener('mouseenter',function(){ gridExpand(t); }); });
-  grid.addEventListener('mouseleave',gridEqual);
-  var resizeT;
-  window.addEventListener('resize',function(){ clearTimeout(resizeT); resizeT=setTimeout(gridSync,150); },{passive:true});
-  gridSync();
-  window.addEventListener('load',gridSync);
-  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(gridSync); }
+  tiles.forEach(function(t){
+    t.addEventListener('mouseenter',function(){ previewIn(t); });
+    t.addEventListener('mouseleave',function(){ previewOut(t); });
+  });
+  // a preview is positioned from the viewport, so close it if the page scrolls
+  window.addEventListener('scroll',function(){
+    tiles.forEach(function(t){ if(t.classList.contains('previewing')) previewOut(t); });
+  },{passive:true});
 
   /* ---- Hero video lazy load ---- */
   var hv=document.getElementById('hero-video');
@@ -209,7 +189,6 @@
      Elements opt in with [data-reveal] in the HTML; tiles are staggered.
      The hidden state lives in CSS under html.js, so it never flashes. */
   var revealEls=Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
-  tiles.forEach(function(t,i){ t.style.transitionDelay=((i%3)*70)+'ms'; });
   if(reduceMotion){
     revealEls.forEach(function(el){ el.classList.add('in'); });
   } else {
@@ -224,6 +203,22 @@
       });
     },{rootMargin:'0px 0px -8% 0px',threshold:.08});
     revealEls.forEach(function(el){ rio.observe(el); });
+  }
+
+  /* ---- Scroll cube (3D wireframe, rotates with scroll + slow idle spin) ---- */
+  var cube=document.querySelector('#scrollcue .cube');
+  if(cube){
+    if(reduceMotion){
+      cube.style.transform='rotateX(-20deg) rotateY(24deg)';
+    } else {
+      var idle=24;
+      (function spin(){
+        idle+=0.22;
+        var sy=window.scrollY||0;
+        cube.style.transform='rotateX('+(-20+sy*0.16).toFixed(2)+'deg) rotateY('+(idle+sy*0.5).toFixed(2)+'deg)';
+        requestAnimationFrame(spin);
+      })();
+    }
   }
 
   document.getElementById('yr').textContent=new Date().getFullYear();
