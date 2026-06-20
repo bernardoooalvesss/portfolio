@@ -77,7 +77,9 @@
         if(!v.dataset.loaded){
           if(t.dataset.srcWebm) addSrc(v,t.dataset.srcWebm,'video/webm');
           if(t.dataset.srcMp4)  addSrc(v,t.dataset.srcMp4,'video/mp4');
-          v.dataset.loaded='1'; v.load();
+          v.dataset.loaded='1';
+          v.addEventListener('loadedmetadata',function(){ if(v.videoHeight>v.videoWidth*1.05){ t.dataset.orient='portrait'; } },{once:true});
+          v.load();
         }
         if(v.querySelector('source')){t.classList.add('playing');var p=v.play();if(p)p.catch(function(){});}
       } else {
@@ -93,8 +95,9 @@
   });
 
   /* ---- Expanding grid (desktop hover, organic push) ---- */
-  var GBIG=1.9, GSMALL=0.76, RATIO=0.625;   // 16:10 cells at rest
+  var RATIO=0.625;   // 16:10 cells at rest
   var gridActive=false;
+  function rand(a,b){ return a+Math.random()*(b-a); }
   function gridDesktop(){ return window.matchMedia('(min-width:1101px) and (hover:hover) and (pointer:fine)').matches; }
   function visTiles(){ return tiles.filter(function(t){return !t.classList.contains('hidden');}); }
   function gridGap(){ return parseFloat(getComputedStyle(grid).columnGap)||0; }
@@ -117,8 +120,15 @@
     if(vi<0) return;
     var r=Math.max(1,Math.ceil(vis.length/3));
     var col=vi%3, row=Math.floor(vi/3), i, ct=[], rt=[];
-    for(i=0;i<3;i++) ct.push((i===col?GBIG:GSMALL)+'fr');
-    for(i=0;i<r;i++) rt.push((i===row?GBIG:GSMALL)+'fr');
+    var portrait=(t.dataset.orient==='portrait');
+    // Hovered cell: wide+short for landscape, tall+narrow for portrait media.
+    // The other tracks are randomised so neighbours shrink to varied sizes
+    // (fr normalises to the fixed grid box, so the whole set keeps its space).
+    var Hc=portrait?0.95:2.20, Hr=portrait?3.40:1.35;
+    var oc=portrait?[0.60,0.85]:[0.55,0.90];   // other columns
+    var orow=portrait?[0.45,0.72]:[0.70,1.15]; // other rows
+    for(i=0;i<3;i++) ct.push((i===col?Hc:rand(oc[0],oc[1])).toFixed(3)+'fr');
+    for(i=0;i<r;i++) rt.push((i===row?Hr:rand(orow[0],orow[1])).toFixed(3)+'fr');
     grid.style.gridTemplateColumns=ct.join(' ');
     grid.style.gridTemplateRows=rt.join(' ');
   }
