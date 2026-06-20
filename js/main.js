@@ -114,9 +114,10 @@
       return {w:1920, h:1200};
     }
     function sizeMedia(n){
-      var vw=window.innerWidth, vh=window.innerHeight, pad=64, infoW=300;
+      var vw=window.innerWidth, vh=window.innerHeight, pad=48, infoW=280;
       var aspect=n.w/n.h;
-      var mh=Math.min(vh-pad*2, (vw-pad*2-infoW)/aspect, n.h); // fit viewport, never upscale
+      var maxH=Math.min(vh-pad*2, Math.round(vh*0.56), 520);   // keep the overlay compact
+      var mh=Math.min(maxH, (vw-pad*2-infoW)/aspect, n.h);     // fit viewport, never upscale
       pMedia.style.width=Math.round(mh*aspect)+'px';
       pMedia.style.height=Math.round(mh)+'px';
     }
@@ -145,12 +146,21 @@
       pv.classList.remove('open'); current=null;
       hideT=setTimeout(function(){ try{pVideo.pause();}catch(e){} },320);
     }
+    var closeT=0;
+    function cancelClose(){ clearTimeout(closeT); }
+    function scheduleClose(){ clearTimeout(closeT); closeT=setTimeout(closePreview,130); }
     tiles.forEach(function(t){
-      t.addEventListener('mouseenter',function(){ openPreview(t); });
-      t.addEventListener('mouseleave',closePreview);
+      t.addEventListener('mouseenter',function(){ cancelClose(); openPreview(t); });
+      t.addEventListener('mouseleave',scheduleClose);
     });
+    // the card captures the pointer, so tiles beneath it never react; keep it
+    // open while the cursor is on the card, close shortly after leaving.
+    var pCard=pv.querySelector('.preview-card');
+    pCard.addEventListener('mouseenter',cancelClose);
+    pCard.addEventListener('mouseleave',scheduleClose);
+    pCard.addEventListener('click',function(){ if(current){ var t=current; closePreview(); openLB(t); } });
     window.addEventListener('resize',function(){ if(current) sizeMedia(nativeOf(current)); },{passive:true});
-    window.addEventListener('scroll',closePreview,{passive:true});
+    window.addEventListener('scroll',function(){ cancelClose(); closePreview(); },{passive:true});
   }
 
   /* ---- Hero video lazy load ---- */
