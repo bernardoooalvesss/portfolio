@@ -121,12 +121,13 @@
     var r=Math.max(1,Math.ceil(vis.length/3));
     var col=vi%3, row=Math.floor(vi/3), i, ct=[], rt=[];
     var portrait=(t.dataset.orient==='portrait');
-    // Hovered cell: wide+short for landscape, tall+narrow for portrait media.
-    // The other tracks are randomised so neighbours shrink to varied sizes
-    // (fr normalises to the fixed grid box, so the whole set keeps its space).
-    var Hc=portrait?0.95:2.20, Hr=portrait?3.40:1.35;
-    var oc=portrait?[0.60,0.85]:[0.55,0.90];   // other columns
-    var orow=portrait?[0.45,0.72]:[0.70,1.15]; // other rows
+    // Hovered cell: wide for landscape, tall for portrait media. Kept modest so
+    // an open tile never takes more room than ~2 default tiles. The other tracks
+    // are randomised so neighbours shrink to varied sizes (fr normalises to the
+    // fixed grid box, so the whole set keeps occupying the same space).
+    var Hc=portrait?1.05:1.50, Hr=portrait?2.00:1.15;
+    var oc=portrait?[0.85,1.15]:[0.72,0.95];   // other columns
+    var orow=portrait?[0.60,0.85]:[0.85,1.10]; // other rows
     for(i=0;i<3;i++) ct.push((i===col?Hc:rand(oc[0],oc[1])).toFixed(3)+'fr');
     for(i=0;i<r;i++) rt.push((i===row?Hr:rand(orow[0],orow[1])).toFixed(3)+'fr');
     grid.style.gridTemplateColumns=ct.join(' ');
