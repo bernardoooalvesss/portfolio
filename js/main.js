@@ -85,11 +85,7 @@
     });
   },{rootMargin:'100px',threshold:.1});
 
-  tiles.forEach(function(t){
-    io.observe(t);
-    t.addEventListener('click',function(){openLB(t);});
-    t.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openLB(t);}});
-  });
+  tiles.forEach(function(t){ io.observe(t); });
 
   /* ---- Hover preview overlay: the video at its native aspect ratio (no black
      bars, no crop) with the project info to its right. Pointer devices only;
@@ -100,10 +96,8 @@
     var pVideo=pv.querySelector('video'),
         pImg=pv.querySelector('img'),
         pMedia=pv.querySelector('.preview-media'),
-        pTag=pv.querySelector('.p-tag'),
         pTitle=pv.querySelector('.p-title'),
-        pSoft=pv.querySelector('.p-soft'),
-        pRole=pv.querySelector('.p-role'),
+        pNote=pv.querySelector('.p-note-text'),
         current=null, hideT=0;
 
     function nativeOf(t){
@@ -123,10 +117,8 @@
     }
     function openPreview(t){
       clearTimeout(hideT); current=t;
-      pTag.textContent=t.dataset.tag||'';
       pTitle.textContent=t.dataset.title||'';
-      pSoft.textContent=t.dataset.soft||'';
-      pRole.textContent=t.dataset.role||'';
+      pNote.textContent=t.dataset.note||'';
       var hasVideo=!!(t.dataset.srcMp4||t.dataset.srcWebm);
       if(hasVideo){
         pImg.style.display='none'; pVideo.style.display='';
@@ -158,7 +150,6 @@
     var pCard=pv.querySelector('.preview-card');
     pCard.addEventListener('mouseenter',cancelClose);
     pCard.addEventListener('mouseleave',scheduleClose);
-    pCard.addEventListener('click',function(){ if(current){ var t=current; closePreview(); openLB(t); } });
     window.addEventListener('resize',function(){ if(current) sizeMedia(nativeOf(current)); },{passive:true});
     window.addEventListener('scroll',function(){ cancelClose(); closePreview(); },{passive:true});
   }
@@ -176,32 +167,6 @@
     });
   });
   hio.observe(hv);
-
-  /* ---- Lightbox ---- */
-  var lb=document.getElementById('lb'), lbv=document.getElementById('lb-video'), lbi=document.getElementById('lb-img');
-  function openLB(t){
-    document.getElementById('lb-title').textContent=t.dataset.title;
-    document.getElementById('lb-soft').textContent=t.dataset.soft;
-    document.getElementById('lb-role').textContent=t.dataset.role;
-    var hasVideo=!!(t.dataset.srcMp4||t.dataset.srcWebm);
-    lbv.innerHTML='';
-    if(hasVideo){
-      lbi.style.display='none'; lbv.style.display='';
-      if(t.dataset.srcWebm) addSrc(lbv,t.dataset.srcWebm,'video/webm');
-      if(t.dataset.srcMp4)  addSrc(lbv,t.dataset.srcMp4,'video/mp4');
-      var tv=t.querySelector('video'); if(tv) lbv.poster=tv.poster;
-      lbv.load();
-    } else {
-      lbv.style.display='none'; lbi.style.display='';
-      lbi.src=t.dataset.img||t.dataset.poster||''; lbi.alt=t.dataset.title;
-    }
-    lb.classList.add('open');document.body.style.overflow='hidden';
-    document.getElementById('lb-close').focus();
-  }
-  function closeLB(){lb.classList.remove('open');lbv.pause();lbi.removeAttribute('src');document.body.style.overflow='';}
-  document.getElementById('lb-close').addEventListener('click',closeLB);
-  lb.addEventListener('click',function(e){if(e.target===lb)closeLB();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&lb.classList.contains('open'))closeLB();});
 
   /* ---- Nav scroll state ---- */
   var nav=document.getElementById('nav');
