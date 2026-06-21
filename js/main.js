@@ -110,7 +110,7 @@
     function sizeMedia(n){
       var vw=window.innerWidth, vh=window.innerHeight, pad=48, infoW=280;
       var aspect=n.w/n.h;
-      var maxH=Math.min(vh-pad*2, Math.round(vh*0.56), 520);   // keep the overlay compact
+      var maxH=Math.min(vh-pad*2, Math.round(vh*0.64), 600);   // keep the overlay compact
       var mh=Math.min(maxH, (vw-pad*2-infoW)/aspect, n.h);     // fit viewport, never upscale
       pMedia.style.width=Math.round(mh*aspect)+'px';
       pMedia.style.height=Math.round(mh)+'px';
