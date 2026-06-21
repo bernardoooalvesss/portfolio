@@ -194,21 +194,17 @@ footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;displ
 .preview.open .preview-card{opacity:1;transform:translateY(0) scale(1)}
 .preview-info>*{opacity:0;transform:translateY(10px);transition:opacity .45s ease, transform .55s var(--ease)}
 .preview.open .preview-info>*{opacity:1;transform:none}
-.preview.open .p-title{transition-delay:.1s}
-.preview.open .p-specs{transition-delay:.16s}
+.preview.open .p-note-text{transition-delay:.08s}
+.preview.open .p-credit{transition-delay:.16s}
 .preview-media{flex:none;background:#05080c;line-height:0}
 .preview-media video,.preview-media img{width:100%;height:100%;object-fit:cover;display:block}
-.preview-info{flex:none;width:280px;padding:26px 28px;display:flex;flex-direction:column;justify-content:flex-start}
-.p-title{font-family:var(--font-display);font-weight:500;font-size:clamp(1.4rem,1.6vw,1.9rem);letter-spacing:-.02em;line-height:1.1;margin-bottom:20px}
-.p-specs{display:flex;flex-direction:column}
-.p-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 42%, transparent)}
-.p-row:last-child{border-bottom:none}
-.p-row .k{color:var(--ink-faint);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;font-size:.6rem}
-.p-row .v{color:var(--ink);font-weight:500;font-size:.85rem;text-align:right}
-.p-note{margin-top:22px}
-.p-note .k{display:block;margin-bottom:9px;color:var(--ink-faint);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;font-size:.6rem}
-.p-note-text{color:var(--ink-dim);font-size:.92rem;line-height:1.5}
-.preview.open .p-note{transition-delay:.22s}
+.preview-info{flex:none;width:288px;padding:30px 32px;display:flex;flex-direction:column}
+.p-title{font-family:var(--font-display);font-weight:500;font-size:clamp(1.5rem,1.7vw,2rem);letter-spacing:-.02em;line-height:1.08;margin-bottom:14px}
+.p-note-text{color:var(--ink-dim);font-size:1.02rem;line-height:1.55}
+.p-credit{margin-top:auto;padding-top:26px;display:flex;flex-direction:column;gap:13px}
+.c-row{display:flex;flex-direction:column;gap:3px}
+.c-k{font-size:.72rem;color:var(--ink-faint)}
+.c-v{font-weight:500;font-size:.92rem;color:var(--ink)}
 @media(max-width:900px){.preview{display:none!important}}
 
 :focus-visible{outline:2px solid var(--ember);outline-offset:3px}
