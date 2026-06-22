@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
 <title>Bernardo Alves — 3D & VFX Artist</title>
-<meta name="description" content="Portfolio of Bernardo Alves — 3D & VFX artist. Cinema 4D and Redshift: Pyro simulation, particles and fluids, product animation and visualization.">
+<meta name="description" content="Portfolio of Bernardo Alves — Cinema 4D & Redshift artist focused on simulation: Pyro, particles and fluids, with look-dev, lighting and a clean final render.">
 
 <!-- Social / SEO -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Bernardo Alves — 3D & VFX Artist">
-<meta property="og:description" content="Pyro, particles and fluids. Product animation and visualization. Cinema 4D / Redshift pipelines.">
+<meta property="og:description" content="Cinema 4D & Redshift. Simulation — Pyro, particles and fluids — with look-dev, lighting and a clean final render.">
 <meta property="og:url" content="https://bernardoooalvesss.github.io/portfolio/">
 <meta property="og:image" content="https://bernardoooalvesss.github.io/portfolio/assets/og-cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bernardo Alves — 3D & VFX Artist">
-<meta name="twitter:description" content="Pyro, particles and fluids. Cinema 4D / Redshift pipelines.">
+<meta name="twitter:description" content="Cinema 4D & Redshift. Simulation — Pyro, particles and fluids — look-dev and render.">
 <meta name="twitter:image" content="https://bernardoooalvesss.github.io/portfolio/assets/og-cover.jpg">
 <meta name="theme-color" content="#0a0e13">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0e13'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%237fb8d8'/%3E%3C/svg%3E">
@@ -46,15 +46,15 @@
   <div class="hero-inner">
     <p class="eyebrow">3D &amp; VFX Artist · Cinema&nbsp;4D / Redshift</p>
     <h1>Portfolio</h1>
-    <p class="hero-sub">Simulation, product animation and visualization — Pyro, particles and fluids, look-dev and lighting. Cinema&nbsp;4D / Redshift, from concept to final render.</p>
+    <p class="hero-sub">Pyro, particles and fluids — with careful look-dev, lighting and a clean final render. Made in Cinema&nbsp;4D and Redshift, from concept to final frame.</p>
     <div class="hero-meta">
       <span class="slate"><b>Based</b> · Portugal</span>
       <span class="slate"><b>Stack</b> · C4D 2026 · Redshift</span>
-      <span class="slate"><b>Focus</b> · Sim / Animation / Look-dev</span>
+      <span class="slate"><b>Focus</b> · Simulation · Look-dev · Animation</span>
     </div>
   </div>
   <div class="scrollcue" id="scrollcue" aria-hidden="true">
-    <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <canvas class="solid" id="solid"></canvas>
     <em class="slate">scroll</em>
   </div>
 </header>
@@ -77,56 +77,56 @@
       data-title="Explosion"
       data-soft="C4D Pyro · Redshift" data-role="Sim / FX"
       data-tag="Pyro / FX"
-      data-note="Pyro explosion animation"
+      data-note="Pyro explosion simulation"
       data-src-mp4="assets/media/EXPLOSAO1.mp4"></article>
 
     <article class="tile"
       data-title="Smoke Ball"
       data-soft="C4D Pyro · Redshift" data-role="Sim / FX"
       data-tag="Pyro / FX"
-      data-note="Pyro smoke animation"
+      data-note="Pyro smoke simulation"
       data-src-mp4="assets/media/bolafumo.mp4"></article>
 
     <article class="tile"
       data-title="Particle Test — Pyro"
       data-soft="C4D Particles · Redshift" data-role="Sim / FX"
       data-tag="Particles"
-      data-note="Particle animation driven by a Pyro emitter"
+      data-note="Particle system driven by a Pyro emitter"
       data-src-mp4="assets/media/PARTICULAS_PYROTESTE1.mp4"></article>
 
     <article class="tile"
       data-title="Skull"
       data-soft="C4D · Redshift" data-role="Sim / Animation"
       data-tag="Animation"
-      data-note="Material creation and particle animation"
+      data-note="Particle animation with custom materials"
       data-src-mp4="assets/media/caveira.mp4"></article>
 
     <article class="tile"
       data-title="Pebbles"
       data-soft="C4D · Redshift" data-role="Sim / FX"
       data-tag="Sim"
-      data-note="Particle animation"
+      data-note="Particle simulation"
       data-src-mp4="assets/media/pedrinhas.mp4"></article>
 
     <article class="tile" data-orient="portrait"
       data-title="Plant"
       data-soft="C4D · Redshift" data-role="Animation"
       data-tag="Animation"
-      data-note="Branch spline-modifier animation"
+      data-note="Spline-modifier branch animation"
       data-src-mp4="assets/media/planta.mp4"></article>
 
     <article class="tile"
       data-title="Christmas Animation"
       data-soft="C4D · Redshift" data-role="Sim / Animation"
       data-tag="Animation"
-      data-note="Particle animation"
+      data-note="Festive particle animation"
       data-src-mp4="assets/media/anim_painatal.mp4"></article>
 
     <article class="tile"
       data-title="Koala — Still"
       data-soft="Redshift" data-role="Render"
       data-tag="Still"
-      data-note="Still render with hair material"
+      data-note="Still render with a fur material"
       data-poster="assets/media/koala.jpg" data-img="assets/media/koala.jpg"></article>
   </div>
 </section>
@@ -137,18 +137,60 @@
     <h2>About</h2>
     <span class="count">// 3D · VFX</span>
   </div>
+
   <div class="about" data-reveal>
-    <div>
-      <p>I'm a <strong>3D &amp; VFX artist</strong> focused on Maxon Cinema&nbsp;4D and Redshift pipelines. I work across simulation (Pyro, particles, fluids), commercial product animation, and visualization for architecture and events.</p>
-      <p>My focus is <strong>aesthetic precision with technical efficiency</strong>: nailing look-dev, lighting and render optimization without compromising physical fidelity. I also build small tools to speed up my simulation workflow.</p>
+    <div class="about-body">
+      <p class="lede">A Cinema&nbsp;4D artist focused on simulation and the look of the final render.</p>
+      <p>I'm from Coimbra, where I studied <strong>Multimedia</strong> at the Instituto Superior Miguel Torga. From there I spent two years at the <strong>Blachere Illumination Design&nbsp;Studio</strong> — the studio behind every Blachere Illumination branch. I joined as an intern and stayed on for a second year, developing 3D festive decoration pieces and working closely with the team to take each design from concept to finished model.</p>
+      <p>My tool is <strong>Cinema&nbsp;4D</strong>, and the part of the craft I care about most is simulation — <strong>Pyro, particles and fluids</strong> — alongside lighting, shading and getting the final render to read exactly the way it should. That's where I want to grow: building more technically demanding simulation work and pushing the quality of every render as far as it can go.</p>
     </div>
-    <div class="spec-list">
-      <div class="spec-row"><span class="k">DCC</span><span class="v">Cinema 4D 2026</span></div>
-      <div class="spec-row"><span class="k">Render</span><span class="v">Redshift</span></div>
-      <div class="spec-row"><span class="k">Sim</span><span class="v">Pyro · Particles · Fluids</span></div>
-      <div class="spec-row"><span class="k">Dev</span><span class="v">Python · C4D Plugins</span></div>
-      <div class="spec-row"><span class="k">Sectors</span><span class="v">VFX · Product · Archviz</span></div>
+
+    <figure class="portrait">
+      <div class="portrait-frame">
+        <img src="assets/media/portrait.jpg" alt="Bernardo Alves"
+             onerror="this.style.display='none';this.parentNode.classList.add('no-img')">
+      </div>
+      <figcaption>
+        <span class="p-name">Bernardo Alves</span>
+        <em class="slate">Coimbra · Portugal</em>
+      </figcaption>
+    </figure>
+
+    <div class="cv">
+      <div class="cv-col">
+        <h4 class="cv-h">Education</h4>
+        <ol class="timeline">
+          <li>
+            <span class="t-role">Multimedia</span>
+            <span class="t-org">Instituto Superior Miguel Torga</span>
+            <span class="t-note">Coimbra, Portugal</span>
+          </li>
+        </ol>
+      </div>
+      <div class="cv-col">
+        <h4 class="cv-h">Experience</h4>
+        <ol class="timeline">
+          <li>
+            <span class="t-year">~2 yrs</span>
+            <span class="t-role">Blachere Illumination — Design Studio</span>
+            <span class="t-org">Internship (1&nbsp;yr), then on the team (1&nbsp;yr)</span>
+            <span class="t-note">Modelled 3D festive decoration pieces for Blachere Illumination, working with the studio team from first concept to final model.</span>
+            <span class="t-note">Built custom materials to reproduce the company's real-world finishes in render.</span>
+            <span class="t-note">Composited each piece into photos of the real streets and shopping centres in Photoshop, so clients could picture the project in place.</span>
+            <span class="t-note">Animated the company's pieces and products in Cinema&nbsp;4D and After Effects — festive LED flashes, water-drop effects, colour changes and video mapping.</span>
+            <span class="t-note">Developed an in-house Cinema&nbsp;4D plugin with Claude Code — an LED cloner, a spline measurer, and an area tool for sizing the company's products.</span>
+          </li>
+        </ol>
+      </div>
     </div>
+  </div>
+
+  <div class="toolset" data-reveal>
+    <span class="ts-item"><span class="ts-k">DCC</span>Cinema 4D 2026</span>
+    <span class="ts-item"><span class="ts-k">Render</span>Redshift</span>
+    <span class="ts-item"><span class="ts-k">Sim</span>Pyro · Particles · Fluids</span>
+    <span class="ts-item"><span class="ts-k">Tools</span>C4D plugins via Claude Code</span>
+    <span class="ts-item"><span class="ts-k">Aiming at</span>VFX · Simulation</span>
   </div>
 </section>
 
@@ -168,19 +210,24 @@
   <span class="slate">Built static · GitHub Pages</span>
 </footer>
 
-<!-- ===================== HOVER PREVIEW ===================== -->
+<!-- ===================== CLICK PREVIEW ===================== -->
 <div class="preview" id="preview" aria-hidden="true">
-  <div class="preview-card">
+  <div class="preview-card" role="dialog" aria-modal="true" aria-label="Project preview">
+    <button class="preview-close" type="button" id="preview-close" aria-label="Close preview">
+      <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+    </button>
     <div class="preview-media">
       <video muted loop playsinline preload="none"></video>
       <img alt="" style="display:none">
     </div>
     <aside class="preview-info">
+      <span class="p-tag"></span>
       <h3 class="p-title"></h3>
       <p class="p-note-text"></p>
       <div class="p-credit">
         <div class="c-row"><span class="c-k">Software</span><span class="c-v">Maxon Cinema 4D</span></div>
         <div class="c-row"><span class="c-k">Render</span><span class="c-v">Redshift</span></div>
+        <div class="c-row"><span class="c-k">Role</span><span class="c-v p-role"></span></div>
       </div>
     </aside>
   </div>
