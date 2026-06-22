@@ -208,6 +208,7 @@ section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(-
 .t-year{display:inline-block;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.05em;color:var(--ember);margin-bottom:5px}
 .t-role{display:block;font-family:var(--font-display);font-weight:500;font-size:1.05rem;letter-spacing:-.01em;line-height:1.25}
 .t-org{display:block;color:var(--ink-dim);font-size:.92rem;margin-top:3px}
+.t-stack{display:block;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.04em;color:var(--ember-soft);margin-top:9px}
 .t-note{display:block;color:var(--ink-faint);font-size:.86rem;margin-top:5px;line-height:1.5}
 
 /* toolset strip */
