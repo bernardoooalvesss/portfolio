@@ -6,6 +6,10 @@ Por projeto precisas de:
   - loop:    flare.webm  (AV1/VP9, opcional, mais leve)
 E o showreel do hero: reel.mp4 (+ reel.webm opcional)
 
+FOTO DO "ABOUT": grava a tua foto como
+  assets/media/portrait.jpg   (retrato, ~4:5; podes pôr a cores —
+                               o site converte para P&B automaticamente)
+
 Compressão (ffmpeg):
   ffmpeg -i in.mov -vf "scale=-2:1080" -c:v libx264 -crf 24 -preset slow \
     -an -movflags +faststart -pix_fmt yuv420p flare.mp4

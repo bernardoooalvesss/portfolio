@@ -87,17 +87,20 @@
 
   tiles.forEach(function(t){ io.observe(t); });
 
-  /* ---- Hover preview overlay: the video at its native aspect ratio (no black
-     bars, no crop) with the project info to its right. Pointer devices only;
-     always fitted to the viewport and never upscaled beyond native size. ---- */
-  var canHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  /* ---- Click preview overlay: the video at its native aspect ratio (no black
+     bars, no crop) with the project info beside it. Opens on click/tap, closes
+     on the backdrop, the close button or Esc. Always fitted to the viewport and
+     never upscaled beyond native size. ---- */
   var pv=document.getElementById('preview');
-  if(pv && canHover){
+  if(pv){
     var pVideo=pv.querySelector('video'),
         pImg=pv.querySelector('img'),
         pMedia=pv.querySelector('.preview-media'),
+        pCard=pv.querySelector('.preview-card'),
+        pTag=pv.querySelector('.p-tag'),
         pTitle=pv.querySelector('.p-title'),
         pNote=pv.querySelector('.p-note-text'),
+        pRole=pv.querySelector('.p-role'),
         current=null, hideT=0;
 
     function nativeOf(t){
@@ -108,17 +111,19 @@
       return {w:1920, h:1200};
     }
     function sizeMedia(n){
-      var vw=window.innerWidth, vh=window.innerHeight, pad=48, infoW=280;
+      var vw=window.innerWidth, vh=window.innerHeight, pad=48, infoW=300;
       var aspect=n.w/n.h;
-      var maxH=Math.min(vh-pad*2, Math.round(vh*0.64), 600);   // keep the overlay compact
+      var maxH=Math.min(vh-pad*2, Math.round(vh*0.7), 660);    // keep the overlay compact
       var mh=Math.min(maxH, (vw-pad*2-infoW)/aspect, n.h);     // fit viewport, never upscale
       pMedia.style.width=Math.round(mh*aspect)+'px';
       pMedia.style.height=Math.round(mh)+'px';
     }
     function openPreview(t){
       clearTimeout(hideT); current=t;
+      pTag.textContent=t.dataset.tag||'';
       pTitle.textContent=t.dataset.title||'';
       pNote.textContent=t.dataset.note||'';
+      if(pRole) pRole.textContent=t.dataset.role||'—';
       var hasVideo=!!(t.dataset.srcMp4||t.dataset.srcWebm);
       if(hasVideo){
         pImg.style.display='none'; pVideo.style.display='';
@@ -131,27 +136,32 @@
         pImg.src=t.dataset.img||t.dataset.poster||'';
       }
       sizeMedia(nativeOf(t));
-      pv.classList.add('open');
+      pv.classList.add('open'); pv.setAttribute('aria-hidden','false');
+      document.body.classList.add('no-scroll');
     }
     function closePreview(){
       if(!pv.classList.contains('open')) return;
-      pv.classList.remove('open'); current=null;
-      hideT=setTimeout(function(){ try{pVideo.pause();}catch(e){} },320);
+      pv.classList.remove('open'); pv.setAttribute('aria-hidden','true');
+      document.body.classList.remove('no-scroll'); current=null;
+      hideT=setTimeout(function(){ try{pVideo.pause();}catch(e){} },340);
     }
-    var closeT=0;
-    function cancelClose(){ clearTimeout(closeT); }
-    function scheduleClose(){ clearTimeout(closeT); closeT=setTimeout(closePreview,130); }
+
     tiles.forEach(function(t){
-      t.addEventListener('mouseenter',function(){ cancelClose(); openPreview(t); });
-      t.addEventListener('mouseleave',scheduleClose);
+      t.style.cursor='pointer';
+      t.setAttribute('tabindex','0');
+      t.setAttribute('role','button');
+      t.addEventListener('click',function(){ openPreview(t); });
+      t.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openPreview(t); }
+      });
     });
-    // the card captures the pointer, so tiles beneath it never react; keep it
-    // open while the cursor is on the card, close shortly after leaving.
-    var pCard=pv.querySelector('.preview-card');
-    pCard.addEventListener('mouseenter',cancelClose);
-    pCard.addEventListener('mouseleave',scheduleClose);
+
+    // close on backdrop click (outside the card), close button, or Esc
+    pv.addEventListener('click',function(e){ if(!pCard.contains(e.target)) closePreview(); });
+    var closeBtn=document.getElementById('preview-close');
+    if(closeBtn) closeBtn.addEventListener('click',closePreview);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePreview(); });
     window.addEventListener('resize',function(){ if(current) sizeMedia(nativeOf(current)); },{passive:true});
-    window.addEventListener('scroll',function(){ cancelClose(); closePreview(); },{passive:true});
   }
 
   /* ---- Hero video lazy load ---- */
@@ -206,21 +216,140 @@
     revealEls.forEach(function(el){ rio.observe(el); });
   }
 
-  /* ---- Scroll cube (3D wireframe, rotates with scroll + slow idle spin) ---- */
-  var cube=document.querySelector('#scrollcue .cube');
-  if(cube){
-    if(reduceMotion){
-      cube.style.transform='rotateX(-20deg) rotateY(24deg)';
-    } else {
-      var idle=24;
-      (function spin(){
-        idle+=0.22;
-        var sy=window.scrollY||0;
-        cube.style.transform='rotateX('+(-20+sy*0.16).toFixed(2)+'deg) rotateY('+(idle+sy*0.5).toFixed(2)+'deg)';
-        requestAnimationFrame(spin);
-      })();
+  /* ---- Living 3D blob (corner widget, follows the whole page) ----
+     A cloud of points spread over a sphere (Fibonacci distribution), whose
+     radius churns with layered sine "noise" — a round, organic, breathing
+     blob. No wireframe lines: just dots + a soft glowing core. ---- */
+  (function(){
+    var cv=document.getElementById('solid');
+    if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var dpr=Math.min(window.devicePixelRatio||1,2);
+    var SIZE=(window.matchMedia('(max-width:640px)').matches)?38:46;
+    cv.width=SIZE*dpr; cv.height=SIZE*dpr;
+
+    var N=170, GA=Math.PI*(3-Math.sqrt(5)), dirs=[];
+    for(var k=0;k<N;k++){
+      var y=1-2*(k+0.5)/N, rr=Math.sqrt(Math.max(0,1-y*y)), ph=k*GA;
+      dirs.push([rr*Math.cos(ph), y, rr*Math.sin(ph)]);
     }
-  }
+
+    var EMBER=[127,184,216], R=SIZE*0.24*dpr, CX=cv.width/2, CY=cv.height/2;
+
+    function blobR(p,t){
+      return 1
+        + 0.24*Math.sin(2.0*p[0] + t*1.3)
+        + 0.22*Math.sin(1.9*p[1] + t*1.6 + 1.7)
+        + 0.18*Math.sin(2.3*p[2] + t*1.1 + 3.1)
+        + 0.12*Math.sin(3.4*(p[0]+p[1]) - t*1.9)
+        + 0.10*Math.sin(3.1*(p[1]+p[2]) + t*2.2);
+    }
+
+    function render(t,ax,ay){
+      var cosx=Math.cos(ax),sinx=Math.sin(ax),cosy=Math.cos(ay),siny=Math.sin(ay);
+      var pts=dirs.map(function(d){
+        var r=blobR(d,t), x=d[0]*r, y=d[1]*r, z=d[2]*r;
+        var x1=x*cosy+z*siny, z1=-x*siny+z*cosy;
+        var y2=y*cosx-z1*sinx, z2=y*sinx+z1*cosx;
+        return [CX+x1*R, CY-y2*R, z2];
+      });
+      pts.sort(function(a,b){return a[2]-b[2];});   // back-to-front
+      ctx.clearRect(0,0,cv.width,cv.height);
+      // soft core for body
+      var core=ctx.createRadialGradient(CX,CY,0,CX,CY,R*1.25);
+      core.addColorStop(0,'rgba('+EMBER[0]+','+EMBER[1]+','+EMBER[2]+',0.16)');
+      core.addColorStop(1,'rgba('+EMBER[0]+','+EMBER[1]+','+EMBER[2]+',0)');
+      ctx.fillStyle=core;
+      ctx.beginPath();ctx.arc(CX,CY,R*1.25,0,6.2832);ctx.fill();
+      // dots
+      pts.forEach(function(p){
+        var depth=(p[2]+1.4)/2.8; if(depth<0)depth=0; if(depth>1)depth=1;
+        var rad=(0.7+1.5*depth)*dpr, a=0.18+0.72*depth;
+        ctx.fillStyle='rgba('+EMBER[0]+','+EMBER[1]+','+EMBER[2]+','+a.toFixed(3)+')';
+        ctx.beginPath();ctx.arc(p[0],p[1],rad,0,6.2832);ctx.fill();
+      });
+    }
+
+    if(reduceMotion){
+      render(0,0.5,0.6);
+    } else {
+      (function frame(now){
+        var sy=window.scrollY||0;
+        var t=now*0.0016;
+        var ay=now*0.00045 + sy*0.003;
+        var ax=0.45 + Math.sin(now*0.0003)*0.18 + sy*0.0005;
+        render(t,ax,ay);
+        requestAnimationFrame(frame);
+      })(performance.now());
+    }
+
+    // the "scroll" hint only makes sense at the top — fade it once we move down
+    var label=document.querySelector('#scrollcue .slate');
+    if(label) window.addEventListener('scroll',function(){
+      label.style.opacity=(window.scrollY>180)?'0':'0.7';
+    },{passive:true});
+  })();
+
+  /* ---- Email compose chooser ----
+     A visitor's webmail can't be detected, so any mailto link opens a small
+     menu instead: pick Gmail / Outlook / the default mail app, and a new
+     message — already addressed to me — opens in that service. ---- */
+  (function(){
+    var ADDR='bernardoalves3d@gmail.com';
+    var compose={
+      gmail:'https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(ADDR),
+      outlook:'https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent(ADDR),
+      app:'mailto:'+ADDR
+    };
+    var menu=null, anchorEl=null;
+    function close(){
+      if(!menu) return;
+      menu.classList.remove('open');
+      var m=menu; menu=null; anchorEl=null;
+      setTimeout(function(){ if(m&&m.parentNode) m.parentNode.removeChild(m); },180);
+      document.removeEventListener('keydown',onKey,true);
+    }
+    function onKey(e){ if(e.key==='Escape') close(); }
+    function place(){
+      if(!menu||!anchorEl) return;
+      var r=anchorEl.getBoundingClientRect(), mw=menu.offsetWidth, mh=menu.offsetHeight, pad=12;
+      var left=Math.max(pad, Math.min(r.left, window.innerWidth-mw-pad));
+      var top=r.bottom+8;
+      if(top+mh>window.innerHeight-pad) top=Math.max(pad, r.top-mh-8);
+      menu.style.left=Math.round(left)+'px';
+      menu.style.top=Math.round(top)+'px';
+    }
+    function open(anchor){
+      close(); anchorEl=anchor;
+      menu=document.createElement('div');
+      menu.className='mail-menu'; menu.setAttribute('role','menu');
+      menu.innerHTML=
+        '<span class="mail-menu-h">Open a new email to me</span>'+
+        '<a role="menuitem" href="'+compose.gmail+'" target="_blank" rel="noopener">Gmail</a>'+
+        '<a role="menuitem" href="'+compose.outlook+'" target="_blank" rel="noopener">Outlook</a>'+
+        '<a role="menuitem" href="'+compose.app+'">Default mail app</a>'+
+        '<button role="menuitem" type="button" data-copy>Copy address</button>';
+      document.body.appendChild(menu);
+      place();
+      requestAnimationFrame(function(){ if(menu) menu.classList.add('open'); });
+      var copyBtn=menu.querySelector('[data-copy]');
+      copyBtn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var ok=function(){ copyBtn.textContent='Copied ✓'; setTimeout(close,750); };
+        if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(ADDR).then(ok,ok); }
+        else { ok(); }
+      });
+      menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ setTimeout(close,0); }); });
+      document.addEventListener('keydown',onKey,true);
+    }
+    document.addEventListener('click',function(e){
+      var a=e.target.closest&&e.target.closest('a[href^="mailto:"]');
+      if(a){ e.preventDefault(); open(a); return; }
+      if(menu && !menu.contains(e.target)) close();
+    },false);
+    window.addEventListener('resize',place,{passive:true});
+    window.addEventListener('scroll',function(){ if(menu) close(); },{passive:true});
+  })();
 
   document.getElementById('yr').textContent=new Date().getFullYear();
 })();
