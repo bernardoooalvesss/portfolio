@@ -93,8 +93,9 @@ html.js [data-reveal].in{opacity:1;transform:none}
   line-height:1.0;letter-spacing:-.035em;max-width:15ch;
 }
 .hero h1 em{font-style:normal;color:var(--ember)}
-.hero-sub{margin-top:26px;max-width:48ch;color:var(--ink-dim);font-size:clamp(1.02rem,1.4vw,1.2rem);line-height:1.6}
-.hero-meta{display:flex;flex-wrap:wrap;gap:10px 32px;margin-top:36px}
+.hero .eyebrow{font-size:.82rem;letter-spacing:.24em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px 40px;margin-top:40px}
+.hero-meta .slate{font-size:.82rem;letter-spacing:.05em}
 /* morphing wireframe solid — fixed to the corner, follows the whole page */
 .scrollcue{position:fixed;right:var(--gutter);bottom:34px;z-index:25;display:flex;flex-direction:column;align-items:center;gap:11px;pointer-events:none}
 .scrollcue .solid{width:46px;height:46px;display:block;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--ember) 30%, transparent))}
@@ -124,9 +125,8 @@ section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(-
 .tile.hidden{display:none}
 
 /* ---------------- WORK GRID ----------------
-   3 columns, full width. On desktop the grid becomes "expandable":
-   hovering a tile grows its column + row and gently pushes the rest
-   (driven from JS by animating the grid track sizes). */
+   3-column full-bleed gallery. Each tile autoplays a muted loop while on
+   screen and opens a fitted preview overlay on click. */
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -179,10 +179,13 @@ section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(-
 /* portrait — small, secondary; image toned to near-B&W, caption sits below it */
 .portrait{position:relative;width:190px;border-radius:13px;overflow:hidden;background:var(--bg-raise);border:1px solid color-mix(in srgb,var(--ink) 9%, transparent)}
 .portrait-frame{position:relative;line-height:0}
-.portrait-frame img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;filter:grayscale(1) contrast(1.06) brightness(.97)}
+.portrait-frame img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;filter:grayscale(1) contrast(1.06) brightness(.97);transition:filter .6s var(--ease)}
 .portrait-frame::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(150deg,color-mix(in srgb,var(--ember) 55%,transparent),transparent 55%,color-mix(in srgb,var(--rose) 38%,transparent));
-  mix-blend-mode:soft-light;opacity:.75}
+  mix-blend-mode:soft-light;opacity:.75;transition:opacity .6s var(--ease)}
+/* a quiet reward: the B&W portrait warms to colour on hover */
+.portrait:hover .portrait-frame img,.portrait:focus-within .portrait-frame img{filter:grayscale(0) contrast(1.02) brightness(1)}
+.portrait:hover .portrait-frame::after,.portrait:focus-within .portrait-frame::after{opacity:0}
 .portrait figcaption{padding:11px 14px 13px;display:flex;flex-direction:column;gap:2px;line-height:1.25}
 .portrait .p-name{font-family:var(--font-display);font-weight:500;font-size:.92rem;letter-spacing:-.01em;line-height:1.2}
 .portrait figcaption .slate{font-size:.6rem;letter-spacing:.07em}
@@ -194,7 +197,6 @@ section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(-
 .about-body p{color:var(--ink-dim);font-size:1.06rem;line-height:1.72}
 .about-body p+p{margin-top:20px}
 .about-body strong{color:var(--ink);font-weight:500}
-.about-body .lede{font-family:var(--font-display);font-weight:500;color:var(--ink);font-size:clamp(1.3rem,1.9vw,1.66rem);line-height:1.3;letter-spacing:-.015em;margin-bottom:26px;max-width:30ch}
 
 /* CV timeline — stacked when it sits in the right column, side-by-side when full width */
 .cv{display:flex;flex-direction:column;gap:30px}
@@ -226,6 +228,8 @@ section{max-width:var(--maxw);margin:0 auto;padding:clamp(96px,15vh,196px) var(-
 .contact-links a{color:var(--ink-dim);border-bottom:1px solid transparent;padding-bottom:3px;transition:color .2s,border-color .2s}
 .contact-links a:hover,.contact-links a:focus-visible{color:var(--ink);border-color:var(--rose)}
 footer{max-width:var(--maxw);margin:0 auto;padding:34px var(--gutter) 56px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid color-mix(in srgb,var(--line) 32%, transparent)}
+.foot-top{transition:color .2s}
+.foot-top:hover,.foot-top:focus-visible{color:var(--ink)}
 
 /* ---------------- EMAIL COMPOSE MENU ---------------- */
 .mail-menu{position:fixed;z-index:60;min-width:212px;display:flex;flex-direction:column;padding:7px;

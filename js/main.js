@@ -101,7 +101,8 @@
         pTitle=pv.querySelector('.p-title'),
         pNote=pv.querySelector('.p-note-text'),
         pRole=pv.querySelector('.p-role'),
-        current=null, hideT=0;
+        closeBtn=document.getElementById('preview-close'),
+        current=null, hideT=0, lastFocus=null;
 
     function nativeOf(t){
       var v=t.querySelector('video');
@@ -138,12 +139,14 @@
       sizeMedia(nativeOf(t));
       pv.classList.add('open'); pv.setAttribute('aria-hidden','false');
       document.body.classList.add('no-scroll');
+      lastFocus=document.activeElement; if(closeBtn) closeBtn.focus();
     }
     function closePreview(){
       if(!pv.classList.contains('open')) return;
       pv.classList.remove('open'); pv.setAttribute('aria-hidden','true');
       document.body.classList.remove('no-scroll'); current=null;
       hideT=setTimeout(function(){ try{pVideo.pause();}catch(e){} },340);
+      if(lastFocus && lastFocus.focus){ lastFocus.focus(); lastFocus=null; }
     }
 
     tiles.forEach(function(t){
@@ -158,7 +161,6 @@
 
     // close on backdrop click (outside the card), close button, or Esc
     pv.addEventListener('click',function(e){ if(!pCard.contains(e.target)) closePreview(); });
-    var closeBtn=document.getElementById('preview-close');
     if(closeBtn) closeBtn.addEventListener('click',closePreview);
     document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePreview(); });
     window.addEventListener('resize',function(){ if(current) sizeMedia(nativeOf(current)); },{passive:true});
