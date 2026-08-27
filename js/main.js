@@ -112,12 +112,20 @@
       return {w:1920, h:1200};
     }
     function sizeMedia(n){
-      var vw=window.innerWidth, vh=window.innerHeight, pad=48, infoW=300;
+      var vw=window.innerWidth, vh=window.innerHeight;
       var aspect=n.w/n.h;
-      var maxH=Math.min(vh-pad*2, Math.round(vh*0.7), 660);    // keep the overlay compact
-      var mh=Math.min(maxH, (vw-pad*2-infoW)/aspect, n.h);     // fit viewport, never upscale
-      pMedia.style.width=Math.round(mh*aspect)+'px';
-      pMedia.style.height=Math.round(mh)+'px';
+      if(vw<=900){
+        // stacked layout: media fills card width, height follows aspect ratio capped at 55vh
+        var autoH=Math.round(vw*n.h/n.w);
+        pMedia.style.width='100%';
+        pMedia.style.height=Math.min(autoH, Math.round(vh*0.55))+'px';
+      } else {
+        var pad=48, infoW=300;
+        var maxH=Math.min(vh-pad*2, Math.round(vh*0.7), 660);
+        var mh=Math.min(maxH, (vw-pad*2-infoW)/aspect, n.h);
+        pMedia.style.width=Math.round(mh*aspect)+'px';
+        pMedia.style.height=Math.round(mh)+'px';
+      }
     }
     function openPreview(t){
       clearTimeout(hideT); current=t;
@@ -137,6 +145,11 @@
         pImg.src=t.dataset.img||t.dataset.poster||'';
       }
       sizeMedia(nativeOf(t));
+      // re-size once real dimensions arrive (catches portrait/vertical videos)
+      pVideo.addEventListener('loadedmetadata', function onMeta(){
+        pVideo.removeEventListener('loadedmetadata', onMeta);
+        if(current===t) sizeMedia({w:pVideo.videoWidth, h:pVideo.videoHeight});
+      });
       pv.classList.add('open'); pv.setAttribute('aria-hidden','false');
       document.body.classList.add('no-scroll');
       lastFocus=document.activeElement; if(closeBtn) closeBtn.focus();
